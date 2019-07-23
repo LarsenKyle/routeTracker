@@ -1,5 +1,17 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <RouteDisplay />
+    <Signup />
   </div>
 </template>
+<script>
+import RouteDisplay from "../components/RouteDisplay";
+import Signup from "@/components/Signup";
+export default {
+  name: "About",
+  components: {
+    RouteDisplay,
+    Signup
+  }
+};
+</script>
