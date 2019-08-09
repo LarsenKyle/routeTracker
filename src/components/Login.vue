@@ -14,7 +14,7 @@
             <input v-model="password" name="password" type="password" placeholder="Password" />
           </div>
 
-          <p class="feedback" v-if="feedback">{{feedback}}</p>
+          <p class="feedback" v-if="feedback">{{ feedback }}</p>
           <button class="pure-button pure-button-primary">Submit</button>
         </fieldset>
       </form>
@@ -52,6 +52,4 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
-</style>
-
+<style lang="scss" ></style>

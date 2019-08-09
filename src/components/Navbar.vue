@@ -3,11 +3,15 @@
     <nav>
       <div class="nav-container">
         <div class="logo">
-          <h1>Route Tracker</h1>
+          <h1>
+            <router-link to="/">Route Tracker</router-link>
+          </h1>
         </div>
         <div class="links">
           <ul>
-            <li>Log In</li>
+            <li>
+              <router-link to="login">Log In</router-link>
+            </li>
             <li @click="logOut">Log Out</li>
             <li>Settings</li>
           </ul>
@@ -45,6 +49,12 @@ export default {
 * {
   box-sizing: border-box;
 }
+h1 {
+  a {
+    text-decoration: none;
+    color: white;
+  }
+}
 .nav-container {
   background: $secondary-color;
   display: flex;
@@ -62,6 +72,11 @@ export default {
     padding-top: 0.4rem;
     li {
       padding: 0.6rem;
+      text-decoration: none;
+      a {
+        text-decoration: none;
+        color: white;
+      }
     }
     li:hover {
       cursor: pointer;

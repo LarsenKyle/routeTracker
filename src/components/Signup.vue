@@ -22,8 +22,8 @@
             <label for="email">Email Address</label>
             <input v-model="email" name="email" type="email" placeholder="Email Address" />
           </div>
-          <p class="feedback" v-if="feedback">{{feedback}}</p>
-          <button class="pure-button pure-button-primary">Submit</button>
+          <p class="feedback" v-if="feedback">{{ feedback }}</p>
+          <button class="pure-button pure-button-primary float-button">Submit</button>
         </fieldset>
       </form>
     </div>
@@ -69,6 +69,12 @@ export default {
                   user_id: cred.user.uid
                 });
               })
+              .then(
+                firebase
+                  .auth()
+                  .currentUser.updateProfile({ displayName: this.username })
+              )
+
               .then(() => this.$router.push({ name: "about" }))
               .catch(err => {
                 this.feedback = err.message;
@@ -82,7 +88,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style  lang="scss">
 @import "@/config.scss";
 .contain {
   margin-top: 2rem;
@@ -95,7 +101,7 @@ export default {
 .sign {
   color: $secondary-color;
 }
-form button {
+form .float-button {
   float: right;
   margin-right: 8rem;
   margin-top: 1rem;
