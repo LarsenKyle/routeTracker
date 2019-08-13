@@ -5,7 +5,7 @@
     <div class="container">
       <div v-for="(section, index) in sections" :key="index">
         <div @click="toggleRoute" class="section">
-          <h5 @click="dbTest">{{ section.name }}</h5>
+          <h5>{{ section.name }}</h5>
           <i class="material-icons">arrow_drop_down_circle</i>
         </div>
         <div id="hide" class="select">
@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      usersData: "smoke",
       sections: [
         {
           name: "The Overhang",
@@ -94,11 +95,35 @@ export default {
       } else {
         route.setAttribute("id", "hide");
       }
-    },
-    dbTest() {
-      console.log(db.collection("users"));
     }
-  }
+  },
+  created() {
+    let user = firebase.auth().currentUser;
+    
+    db.collection("users")
+      .where("user_id", "==", user.uid)
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let userData = doc.data();
+          userData.id = doc.id;
+          this.usersData = userData;
+        });
+      });
+
+    let sections = db
+      .collection("users")
+      .doc(user.displayName)
+      .collection("section")
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          let sections = doc.data();
+          this.sections.push(sections);
+        });
+      });
+  },
+  mounted() {}
 };
 </script>
 

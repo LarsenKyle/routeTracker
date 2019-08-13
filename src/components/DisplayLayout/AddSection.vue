@@ -15,7 +15,7 @@
         <form @submit.prevent="addSection" class="pure-form">
           <fieldset>
             <label class="minMargin" for="name">Section Name</label>
-            <input class="section" v-model="sectionName" id="name" type="text" />
+            <input class="section" v-model="name" id="name" type="text" />
             <label class="minMargin" for="type">Section Type</label>
             <select class="section" v-model="type" id="type">
               <option>Roped</option>
@@ -37,21 +37,25 @@ export default {
   data() {
     return {
       usersData: [],
-      sectionName: null,
+      name: null,
       type: null,
       feedback: null
     };
   },
   methods: {
     addSection() {
-      if (this.sectionName && this.type) {
+      if (this.name && this.type) {
+        let displayName = this.usersData[0].id;
         db.collection("users")
-          .doc(this.usersData[0].id)
+          .doc(displayName)
           .collection("section")
           .add({
-            sectionName: this.sectionName,
+            name: this.name,
             type: this.type
           });
+
+        firebase.auth().currentUser.updateProfile({ displayName: displayName });
+
         let checker = document.getElementById("modal-1");
         checker.checked = false;
       } else {

@@ -58,7 +58,6 @@ export default {
           if (doc.exists) {
             this.feedback = "This username already exists";
           } else {
-            this.feedback = "Username is ready";
             firebase
               .auth()
               .createUserWithEmailAndPassword(this.email, this.password)
@@ -69,11 +68,6 @@ export default {
                   user_id: cred.user.uid
                 });
               })
-              .then(
-                firebase
-                  .auth()
-                  .currentUser.updateProfile({ displayName: this.username })
-              )
 
               .then(() => this.$router.push({ name: "about" }))
               .catch(err => {

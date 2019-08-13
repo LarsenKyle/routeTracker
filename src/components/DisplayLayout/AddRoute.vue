@@ -10,12 +10,12 @@
         <form @submit.prevent="addSection" class="pure-form">
           <fieldset>
             <label class="minMargin" for="type">Select Section</label>
-            <select class="section" v-model="type" id="type">
+            <select class="section" id="type">
               <option>Roped</option>
               <option>Boulder</option>
             </select>
             <label class="minMargin" for="name">Route Name</label>
-            <input class="section" v-model="sectionName" id="name" type="text" />
+            <input class="section" id="name" type="text" />
 
             <button type="submit" class="pure-button pure-button-primary">Submit</button>
           </fieldset>
