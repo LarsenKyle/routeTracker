@@ -44,8 +44,13 @@ export default {
   },
   methods: {
     addSection() {
+      let user = firebase.auth().currentUser;
+      let displayName = this.usersData[0].id;
+      if (!user.displayName) {
+        user.updateProfile({ displayName: displayName });
+        location.reload();
+      }
       if (this.name && this.type) {
-        let displayName = this.usersData[0].id;
         db.collection("users")
           .doc(displayName)
           .collection("section")
@@ -53,9 +58,8 @@ export default {
             name: this.name,
             type: this.type
           });
-
-        firebase.auth().currentUser.updateProfile({ displayName: displayName });
-
+        this.name = "";
+        this.type = "";
         let checker = document.getElementById("modal-1");
         checker.checked = false;
       } else {

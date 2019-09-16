@@ -1,12 +1,13 @@
 <template>
   <div class="route-display">
+    <Chart v-bind:routes="routes" />
     <AddSection />
     <AddRoute />
     <div class="container">
-      <div v-for="(section, index) in sections" :key="index">
-        <div @click="toggleRoute" class="section">
-          <h5>{{ section.name }}</h5>
-          <i class="material-icons">arrow_drop_down_circle</i>
+      <div v-for="section in sections" :key="section.id">
+        <div class="section">
+          <h5 @click="toggleRoute">{{ section.name }}</h5>
+          <i @click="toggleRoute" class="material-icons">arrow_drop_down_circle</i>
         </div>
         <div id="hide" class="select">
           <table id="route-table" class="pure-table">
@@ -18,7 +19,7 @@
                 <th>Style</th>
               </tr>
             </thead>
-            <tbody v-for="(route, index) in routes" :key="index">
+            <tbody v-for="route in routes" :key="route.id">
               <tr v-if="section.name == route.section" class="route-container">
                 <td>{{route.id}}</td>
                 <td>{{route.grade}}</td>
@@ -37,15 +38,19 @@ import firebase from "firebase";
 import db from "../firebase/init";
 import AddSection from "./DisplayLayout/AddSection";
 import AddRoute from "./DisplayLayout/AddRoute";
+import Delete from "../components/Delete";
+import Chart from "../components/DisplayLayout/Chart";
 export default {
   name: "RouteDisplay",
   components: {
     AddSection,
-    AddRoute
+    AddRoute,
+    Delete,
+    Chart
   },
+
   data() {
     return {
-      usersData: "smoke",
       sections: [
         {
           name: "The Overhang",
@@ -59,7 +64,7 @@ export default {
       routes: [
         {
           section: "The Overhang",
-          id: "Crimp Scampi",
+          id: "Lime Stoned",
           grade: "V4",
           color: "Pink",
           date: "12/24/2018",
@@ -90,6 +95,7 @@ export default {
   methods: {
     toggleRoute(e) {
       const route = e.target.parentNode.nextSibling;
+
       if (route.hasAttribute("id")) {
         route.removeAttribute("id");
       } else {
@@ -99,31 +105,39 @@ export default {
   },
   created() {
     let user = firebase.auth().currentUser;
-    
-    db.collection("users")
-      .where("user_id", "==", user.uid)
-      .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          let userData = doc.data();
-          userData.id = doc.id;
-          this.usersData = userData;
-        });
-      });
 
-    let sections = db
-      .collection("users")
+    db.collection("users")
       .doc(user.displayName)
       .collection("section")
-      .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          let sections = doc.data();
-          this.sections.push(sections);
+      .onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type == "added") {
+            let doc = change.doc;
+            this.sections.push({
+              name: doc.data().name,
+              type: doc.data().type
+            });
+          }
         });
       });
-  },
-  mounted() {}
+    // Get and display routes
+    db.collection("users")
+      .doc(user.displayName)
+      .collection("routes")
+      .onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type == "added") {
+            let doc = change.doc;
+            this.routes.push({
+              id: doc.data().id,
+              color: doc.data().color,
+              grade: doc.data().grade,
+              section: doc.data().section
+            });
+          }
+        });
+      });
+  }
 };
 </script>
 
@@ -142,7 +156,9 @@ export default {
   height: 2.2rem;
   display: flex;
   align-items: center;
-
+  .flexRight {
+    margin-left: auto;
+  }
   h5 {
     font-size: 1.3rem;
     margin-right: 0.4rem;
